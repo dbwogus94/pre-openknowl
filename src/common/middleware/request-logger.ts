@@ -41,6 +41,9 @@ const httpLogger = pinoHttp({
 			url: req.url,
 			id: req.id,
 		}),
+		res: (res) => ({
+			statusCode: res.statusCode,
+		}),
 	},
 });
 
