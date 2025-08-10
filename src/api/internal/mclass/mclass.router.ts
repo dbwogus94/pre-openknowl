@@ -17,10 +17,10 @@ const service = new MClassService(repository);
 const controller = new MClassController(service);
 
 mclassRegistry.registerPath({
-	summary: 'm클래스 생성',
+	summary: 'Internal m클래스 생성',
 	method: 'post',
 	path: '/internal/mclasses',
-	tags: ['MClass'],
+	tags: ['Internal-MClass'],
 	security: [{ bearerAuth: [] }],
 	request: {
 		body: {
@@ -34,10 +34,10 @@ mclassRegistry.registerPath({
 mclassRouter.post('/', isAuth, isAdmin, validateBody(PostCreateMClassRequestDto.toSchema()), controller.create);
 
 mclassRegistry.registerPath({
-	summary: 'm클래스 삭제',
+	summary: 'Internal m클래스 삭제',
 	method: 'delete',
 	path: '/internal/mclasses/{id}',
-	tags: ['MClass'],
+	tags: ['Internal-MClass'],
 	security: [{ bearerAuth: [] }],
 	request: {
 		params: z.object({ id: commonValidations.id }),
