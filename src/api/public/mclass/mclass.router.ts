@@ -1,9 +1,14 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import express, { type Router } from 'express';
 import { z } from 'zod';
-import { createApiResponse, validateParams, validateQuery } from '@/common';
+import { createApiResponse, isAuth, validateParams, validateQuery } from '@/common';
 import { MClassEntity, OrmDataSource } from '@/orm';
-import { GetMClassDetailResponseDto, GetMClassesQuerySchema, GetMClassesResponseDto } from './dto';
+import {
+	GetMClassDetailResponseDto,
+	GetMClassesQuerySchema,
+	GetMClassesResponseDto,
+	PostApplyMClassResponseDto,
+} from './dto';
 import { PublicMClassController } from './mclass.controller';
 import { MClassCoreRepository } from './mclass.repository';
 import { PublicMClassService } from './mclass.service';
@@ -33,4 +38,15 @@ publicMclassRegistry.registerPath({
 	request: { params: z.object({ id: z.string() }) },
 	responses: createApiResponse(GetMClassDetailResponseDto.toSchema(), 'Success', 200),
 });
-publicMclassRouter.get('/mclasses/:id', validateParams(z.object({ id: z.string() })), controller.detail);
+publicMclassRouter.get('/mclasses/:id', controller.detail);
+
+publicMclassRegistry.registerPath({
+	summary: 'm클래스 신청',
+	method: 'post',
+	path: '/mclasses/{id}/apply',
+	tags: ['MClass'],
+	request: { params: z.object({ id: z.string() }) },
+	security: [{ bearerAuth: [] }],
+	responses: createApiResponse(PostApplyMClassResponseDto.toSchema(), 'Created', 201),
+});
+publicMclassRouter.post('/mclasses/:id/apply', isAuth, controller.apply);

@@ -11,7 +11,8 @@ export class GetMClassesResponseDto extends ResponseDto<GetMClassesInfo> {
 	}
 
 	static of(info: GetMClassesInfo[]): GetMClassesResponseDto[] {
-		return info.map((i) => new GetMClassesResponseDto(i));
+		const dtoList = info.map((i) => new GetMClassesResponseDto(i));
+		return dtoList.map((i) => GetMClassesResponseDto.toSchema().parse(i));
 	}
 
 	static toSchema(): z.ZodTypeAny {
