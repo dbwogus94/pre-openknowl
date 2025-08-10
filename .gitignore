@@ -40,3 +40,6 @@ lerna-debug.log*
 ## .npmrc
 **/.npmrc
 .npmrc
+
+## docker-volumes
+**/docker-volumes
