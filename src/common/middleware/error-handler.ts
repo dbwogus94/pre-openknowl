@@ -22,7 +22,7 @@ const addErrorToRequestLog: ErrorRequestHandler = (err, _req, res, next) => {
 
 	// 예상치 못 한 예외
 	if (err instanceof Error) {
-		const httpException = new HttpException(StatusCodes.INTERNAL_SERVER_ERROR, err.message);
+		const httpException = new HttpException(StatusCodes.INTERNAL_SERVER_ERROR, 'Internal Server Error');
 		return res.status(httpException.getStatus()).send(httpException.getResponse());
 	}
 
