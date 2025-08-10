@@ -1,11 +1,15 @@
 import type { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import type { ZodError, ZodSchema } from 'zod';
+import { type ZodError, type ZodSchema, z } from 'zod';
 import { ServiceResponse } from '../models';
 
 export const validateRequest = (schema: ZodSchema) => async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		await schema.parseAsync({ body: req.body, query: req.query, params: req.params });
+		await schema.parseAsync({
+			body: req.body,
+			query: req.query,
+			params: req.params,
+		});
 		next();
 	} catch (err) {
 		const errors = (err as ZodError).errors.map((e) => {
@@ -23,3 +27,10 @@ export const validateRequest = (schema: ZodSchema) => async (req: Request, res: 
 		res.status(serviceResponse.statusCode).send(serviceResponse);
 	}
 };
+
+// Convenience helpers for common cases
+export const validateBody = (schema: ZodSchema) => validateRequest(z.object({ body: schema }));
+
+export const validateQuery = (schema: ZodSchema) => validateRequest(z.object({ query: schema }));
+
+export const validateParams = (schema: ZodSchema) => validateRequest(z.object({ params: schema }));

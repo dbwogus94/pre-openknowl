@@ -1,30 +1,32 @@
-import type { User } from '@/api/public/user/userModel';
+import type { Repository } from 'typeorm';
+import { ResourceNotFoundException } from '@/common';
+import type { UserEntity } from '@/orm';
 
-export const users: User[] = [
-	{
-		id: 1,
-		name: 'Alice',
-		email: 'alice@example.com',
-		age: 42,
-		createdAt: new Date(),
-		updatedAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days later
-	},
-	{
-		id: 2,
-		name: 'Robert',
-		email: 'Robert@example.com',
-		age: 21,
-		createdAt: new Date(),
-		updatedAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days later
-	},
-];
+export type FindWhereOptions = Partial<Pick<UserEntity, 'email' | 'id'>>;
+export type CreateUserParams = Pick<UserEntity, 'email' | 'passwordHash'>;
 
-export class UserRepository {
-	async findAllAsync(): Promise<User[]> {
-		return users;
+export type UserRepository = {
+	exists(options: FindWhereOptions): Promise<boolean>;
+	findBy(options: FindWhereOptions): Promise<UserEntity>;
+	create(params: CreateUserParams): Promise<UserEntity>;
+};
+
+export class UserCoreRepository implements UserRepository {
+	constructor(private readonly ormUserRepo: Repository<UserEntity>) {}
+
+	async exists(options: FindWhereOptions): Promise<boolean> {
+		const user = await this.ormUserRepo.findOneBy(options);
+		return user !== null;
 	}
 
-	async findByIdAsync(id: number): Promise<User | null> {
-		return users.find((user) => user.id === id) || null;
+	async findBy(options: FindWhereOptions): Promise<UserEntity> {
+		const user = await this.ormUserRepo.findOneBy(options);
+		if (!user) throw new ResourceNotFoundException();
+		return user;
+	}
+
+	async create(params: CreateUserParams): Promise<UserEntity> {
+		const user = this.ormUserRepo.create(params);
+		return await this.ormUserRepo.save(user);
 	}
 }

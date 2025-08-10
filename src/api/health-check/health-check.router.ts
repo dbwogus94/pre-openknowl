@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import express, { type Request, type Response, type Router } from 'express';
-import { z } from 'zod';
+import z from 'zod';
 import { ServiceResponse } from '@/common';
 import { createApiResponse } from '@/common/api-docs';
 

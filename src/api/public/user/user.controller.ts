@@ -1,17 +1,15 @@
 import type { Request, RequestHandler, Response } from 'express';
-import { userService } from './user.service';
+import { StatusCodes } from 'http-status-codes';
+import { GetUserResponseDto } from './dto';
+import type { UserService } from './user.service';
 
-class UserController {
-	public getUsers: RequestHandler = async (_req: Request, res: Response) => {
-		const serviceResponse = await userService.findAll();
-		res.status(serviceResponse.statusCode).send(serviceResponse);
-	};
+export class UserController {
+	constructor(private readonly userService: UserService) {}
 
 	public getUser: RequestHandler = async (req: Request, res: Response) => {
-		const id = Number.parseInt(req.params.id as string, 10);
-		const serviceResponse = await userService.findById(id);
-		res.status(serviceResponse.statusCode).send(serviceResponse);
+		// '/users/me' 경로는 JWT에서 주입된 req.id를 사용
+		const id = req.id as string;
+		const userInfo = await this.userService.getById(id);
+		return res.status(StatusCodes.OK).send(GetUserResponseDto.of(userInfo));
 	};
 }
-
-export const userController = new UserController();
