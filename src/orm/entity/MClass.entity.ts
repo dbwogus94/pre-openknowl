@@ -47,4 +47,16 @@ export class MClassEntity {
 	@ManyToOne(() => UserEntity, { onDelete: 'RESTRICT', eager: false })
 	@JoinColumn({ name: 'hostId', referencedColumnName: 'id' })
 	host!: UserEntity;
+
+	isActive(): boolean {
+		return !!this.startAt && !!this.endAt && this.startAt <= new Date() && this.endAt >= new Date();
+	}
+
+	isFull(): boolean {
+		return this.appliedCount >= this.maxParticipants;
+	}
+
+	isEnded(): boolean {
+		return !!this.endAt && this.endAt <= new Date();
+	}
 }

@@ -3,7 +3,7 @@ import express, { type Express } from 'express';
 import helmet from 'helmet';
 import { pino } from 'pino';
 
-import { healthCheckRouter, openAPIRouter, userRouter } from '@/api';
+import { healthCheckRouter, openAPIRouter, publicMclassRouter, userRouter } from '@/api';
 import { authRouter } from '@/api/public/auth';
 import { env, errorHandler, rateLimiter, requestLogger } from '@/common';
 import { mclassRouter } from './api/internal';
@@ -27,6 +27,7 @@ app.use(requestLogger);
 app.use('/health-check', healthCheckRouter);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
+app.use('/', publicMclassRouter);
 
 // Internal API
 app.use('/internal/mclasses', mclassRouter);
