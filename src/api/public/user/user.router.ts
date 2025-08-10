@@ -1,12 +1,12 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import express, { type Router } from 'express';
-import { createApiResponse, validateRequest } from '@/common';
+import { createApiResponse, isAuth } from '@/common';
 import { OrmDataSource, UserEntity } from '@/orm';
+
 import { GetUserResponseDto } from './dto';
 import { UserController } from './user.controller';
 import { UserCoreRepository } from './user.repository';
 import { UserService } from './user.service';
-import { GetUserSchema } from './userModel';
 
 export const userRegistry = new OpenAPIRegistry();
 export const userRouter: Router = express.Router();
@@ -27,10 +27,11 @@ const userController = new UserController(userService);
 userRegistry.register('GetUserResponse', GetUserResponseDto.toSchema());
 userRegistry.registerPath({
 	method: 'get',
-	path: '/users/{id}',
+	path: '/users/me',
 	tags: ['User'],
-	request: { params: GetUserSchema.shape.params },
+	security: [{ bearerAuth: [] }],
 	responses: createApiResponse(GetUserResponseDto.toSchema(), 'Success'),
 });
 
-userRouter.get('/:id', validateRequest(GetUserSchema), userController.getUser);
+// jwt(id)를 문자열로 검증
+userRouter.get('/me', isAuth, userController.getUser);

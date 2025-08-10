@@ -13,6 +13,8 @@ export enum ApplicationExceptionCode {
 	CONFLICT_STATUS = 'CONFLICT_STATUS',
 	/** 서버 오류 */
 	RUNTIME_ERROR = 'RUNTIME_ERROR',
+	/** 인증 실패 */
+	UNAUTHORIZED = 'UNAUTHORIZED',
 }
 
 export const ApplicationExceptionRecord: ApplicationExceptionRecord = {
@@ -30,5 +32,9 @@ export const ApplicationExceptionRecord: ApplicationExceptionRecord = {
 
 	[ApplicationExceptionCode.RUNTIME_ERROR]: {
 		message: 'Runtime 에러입니다.',
+	},
+
+	[ApplicationExceptionCode.UNAUTHORIZED]: {
+		message: '인증 실패입니다.',
 	},
 } as const;

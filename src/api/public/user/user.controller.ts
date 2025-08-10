@@ -5,13 +5,10 @@ import type { UserService } from './user.service';
 
 export class UserController {
 	constructor(private readonly userService: UserService) {}
-	// public getUsers: RequestHandler = async (_req: Request, res: Response) => {
-	// 	const serviceResponse = await userService.findAll();
-	// 	res.status(serviceResponse.statusCode).send(serviceResponse);
-	// };
 
 	public getUser: RequestHandler = async (req: Request, res: Response) => {
-		const id = req.params.id as string;
+		// '/users/me' 경로는 JWT에서 주입된 req.id를 사용
+		const id = req.id as string;
 		const userInfo = await this.userService.getById(id);
 		return res.status(StatusCodes.OK).send(GetUserResponseDto.of(userInfo));
 	};
