@@ -1,11 +1,12 @@
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 import { healthCheckRegistry } from '../health-check';
+import { mclassRegistry } from '../internal';
 import { authRegistry, userRegistry } from '../public';
 
 export type OpenAPIDocument = ReturnType<OpenApiGeneratorV3['generateDocument']>;
 
 export function generateOpenAPIDocument(): OpenAPIDocument {
-	const registry = new OpenAPIRegistry([healthCheckRegistry, userRegistry, authRegistry]);
+	const registry = new OpenAPIRegistry([healthCheckRegistry, userRegistry, authRegistry, mclassRegistry]);
 	// 보안 스키마는 레지스트리에 컴포넌트로 등록
 	registry.registerComponent('securitySchemes', 'bearerAuth', {
 		type: 'http',

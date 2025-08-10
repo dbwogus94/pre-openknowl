@@ -8,7 +8,8 @@ export class PostSigninResponseDto extends ResponseDto<SigninInfo> {
 	}
 
 	static of(info: SigninInfo): PostSigninResponseDto {
-		return new PostSigninResponseDto(info);
+		const dto = new PostSigninResponseDto(info);
+		return PostSigninResponseDto.toSchema().parse(dto);
 	}
 
 	static toSchema(): z.ZodTypeAny {

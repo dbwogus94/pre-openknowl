@@ -1,4 +1,7 @@
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import z from 'zod';
+
+extendZodWithOpenApi(z);
 
 export class SigninInfo {
 	constructor(
@@ -7,6 +10,11 @@ export class SigninInfo {
 	) {}
 
 	static toSchema(): z.ZodTypeAny {
-		return z.object({ userId: z.string(), accessToken: z.string() });
+		return z
+			.object({
+				userId: z.string().describe('유저 ID'),
+				accessToken: z.string().describe('액세스 토큰'),
+			})
+			.strip();
 	}
 }

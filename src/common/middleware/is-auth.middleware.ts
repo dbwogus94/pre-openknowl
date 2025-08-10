@@ -1,6 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import type { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import type { JwtPayload } from '../../api';
 import { HttpException } from '../exception';
 import { env } from '../utils';
 
@@ -23,7 +24,6 @@ const jwtService = new JwtService({
  * 401 {message}
  * - Authorization 헤더와 Bearer type가 들어있지 않을 때 401 응답
  * - jwt 디코딩이 불가능할 때 401 응답
- * - jwt 디코딩 결과로 나온 id와 일치하는 유저가 없을 때 401 응답
  */
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
 	const exception = new HttpException(StatusCodes.UNAUTHORIZED);
@@ -37,11 +37,11 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
 	const token = authHeader.split(' ')[1];
 
 	try {
-		const decoded = jwtService.verify(token);
+		const decoded = jwtService.verify(token) as { id: string; email: string; isAdmin: boolean };
 		if (!decoded?.id) {
 			return res.status(exception.getStatus()).json(exception.getResponse());
 		}
-		req.id = decoded.id; // userId
+		req.user = decoded;
 		// req.token = token; TODO: 필요하면 Response 타입을 확장한다.
 		next();
 	} catch {

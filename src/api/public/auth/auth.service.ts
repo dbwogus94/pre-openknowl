@@ -1,12 +1,12 @@
 import { type JwtService, TokenExpiredError } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 
-import { ConflictStatusException, RunTimeException, UnauthorizedException } from '@/common';
+import { ConflictStatusException, UnauthorizedException } from '@/common';
 import type { UserEntity } from '@/orm';
 import type { UserRepository } from '../user/user.repository';
 import { type SigninCommand, SigninInfo, type SignupCommand, SignupInfo } from './dto';
 
-type JwtPayload = Pick<UserEntity, 'id'> & { email: string; isAdmin: boolean };
+export type JwtPayload = Pick<UserEntity, 'id'> & { email: string; isAdmin: boolean };
 type JwtConfig = {
 	secret: string;
 	expiresIn: string;
