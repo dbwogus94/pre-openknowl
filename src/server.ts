@@ -1,12 +1,13 @@
-import cors from 'cors';
-import express, { type Express } from 'express';
-import helmet from 'helmet';
-import { pino } from 'pino';
+import cors from "cors";
+import express, { type Express } from "express";
+import helmet from "helmet";
+import { pino } from "pino";
 
-import { healthCheckRouter, openAPIRouter, userRouter } from '@/api';
-import { env, errorHandler, rateLimiter, requestLogger } from '@/common';
+import { healthCheckRouter, openAPIRouter, userRouter } from "@/api";
+import { authRouter } from "@/api/public/auth";
+import { env, errorHandler, rateLimiter, requestLogger } from "@/common";
 
-const logger = pino({ name: 'server start' });
+const logger = pino({ name: "server start" });
 const app: Express = express();
 
 // app.set("trust proxy", true);
@@ -22,8 +23,9 @@ app.use(rateLimiter);
 app.use(requestLogger);
 
 // Routes
-app.use('/health-check', healthCheckRouter);
-app.use('/users', userRouter);
+app.use("/health-check", healthCheckRouter);
+app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
 // Swagger UI
 app.use(openAPIRouter);

@@ -15,10 +15,12 @@ export class ResponseDto<T> {
 	}
 
 	static toSchema<T extends z.ZodTypeAny>(schema: T): z.ZodTypeAny {
-		return z.object({
-			success: z.boolean(),
-			message: z.string(),
-			body: schema,
-		});
+		return z
+			.object({
+				success: z.boolean(),
+				message: z.string(),
+				body: schema,
+			})
+			.strip();
 	}
 }
